@@ -7,7 +7,6 @@ import com.filataxi.fila.repository.PositionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -26,12 +25,12 @@ public class FilaController {
 
 	@GetMapping
 	public List<Position> get() {
-		return positionRepository.findAllByOrderByPositionAsc();
+		return positionRepository.findAllByOrderByIndexAsc();
 	}
 
 	@PostMapping("head")
 	public List<Position> head() {
-		List<Position> all = positionRepository.findAllByOrderByPositionAsc();
+		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
 
 		Position position = all.stream().sorted(comparing(Position::getIndex)).findFirst().get();
 		Position lastIndex = all.stream().sorted(comparing(Position::getIndex).reversed()).findFirst().get();
@@ -46,7 +45,7 @@ public class FilaController {
 
 		positionRepository.save(updates);
 
-		return positionRepository.findAllByOrderByPositionAsc();
+		return positionRepository.findAllByOrderByIndexAsc();
 	}
 
 
@@ -68,7 +67,7 @@ public class FilaController {
 	@PostMapping("move-up/{id}/{qtyPositions}")
 	public List<Position> moveUp(@PathVariable Integer id, @PathVariable Integer qtyPositions) {
 
-		List<Position> all = positionRepository.findAllByOrderByPositionAsc();
+		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
 
 		Position position = all.stream().filter(p -> p.getId().equals(id)).findAny().get();
 
@@ -86,7 +85,7 @@ public class FilaController {
 
 		positionRepository.save(updates);
 
-		return positionRepository.findAllByOrderByPositionAsc();
+		return positionRepository.findAllByOrderByIndexAsc();
 
 	}
 
