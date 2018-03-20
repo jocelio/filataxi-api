@@ -15,8 +15,8 @@ public class DriverController {
 	private DriverRepository driverRepository;
 
 	@PostMapping
-	public void addDriver(@RequestBody Driver driver) {
-		driverRepository.save(driver);
+	public Driver addDriver(@RequestBody Driver driver) {
+		return driverRepository.save(driver);
 	}
 
 	@GetMapping
