@@ -15,7 +15,7 @@ public class DriverController {
 	private DriverRepository driverRepository;
 
 	@PostMapping("init")
-	public Driver init() {
+	public void init() {
 		driverRepository.save(Driver.builder().name("Jocelio").build());
 		driverRepository.save(Driver.builder().name("Rafaele").build());
 		driverRepository.save(Driver.builder().name("Heloise").build());
