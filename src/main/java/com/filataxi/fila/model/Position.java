@@ -32,7 +32,7 @@ public class Position {
 	}
 
 	public Position up(Integer qty){
-		return Position.builder().driver(driver).id(id).index(qty-index).build();
+		return Position.builder().driver(driver).id(id).index(index-qty).build();
 	}
 
 	public Position withIndex(Integer index){
