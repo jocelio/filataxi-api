@@ -27,7 +27,7 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
-	compile 'org.springframework.boot:spring-boot-starter-data-mongodb:1.2.5.RELEASE'
+//	compile 'org.springframework.boot:spring-boot-starter-data-mongodb:1.2.5.RELEASE'
 	compile 'org.springframework.boot:spring-boot-devtools:1.5.6.RELEASE'
 	compile("org.hsqldb:hsqldb")
 	compile("org.springframework.boot:spring-boot-starter-security")
