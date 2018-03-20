@@ -71,7 +71,7 @@ public class FilaController {
 
 		Position position = all.stream().filter(p -> p.getId().equals(id)).findAny().get();
 
-		if(position.getIndex() - qtyPositions > 1){
+		if(position.getIndex() - qtyPositions < 1){
 			return null;
 		}
 
