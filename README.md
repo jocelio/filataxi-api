@@ -1,1 +1,1 @@
-# konfx-api (SpringBoot)
+# filataxi-api (SpringBoot)
