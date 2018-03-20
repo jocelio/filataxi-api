@@ -14,6 +14,14 @@ public class DriverController {
 
 	private DriverRepository driverRepository;
 
+	@PostMapping("init")
+	public Driver init() {
+		driverRepository.save(Driver.builder().name("Jocelio").build());
+		driverRepository.save(Driver.builder().name("Rafaele").build());
+		driverRepository.save(Driver.builder().name("Heloise").build());
+		driverRepository.save(Driver.builder().name("Maria Luiza").build());
+	}
+
 	@PostMapping
 	public Driver addDriver(@RequestBody Driver driver) {
 		return driverRepository.save(driver);
