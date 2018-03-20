@@ -1,4 +1,4 @@
-package com.konfx.config.security;
+package com.filataxi.config.security;
 
 
 import com.auth0.jwk.JwkProvider;

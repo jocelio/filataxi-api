@@ -35,6 +35,8 @@ dependencies {
 	compile("org.projectlombok:lombok:1.16.8")
 	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8")
 
+	compile('org.postgresql:postgresql')
+
 	compile('com.auth0:auth0-spring-security-api:1.0.0')
 	compile 'com.auth0:auth0:1.5.1'
 }
