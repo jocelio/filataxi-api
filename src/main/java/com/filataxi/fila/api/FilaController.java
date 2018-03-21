@@ -2,6 +2,7 @@ package com.filataxi.fila.api;
 
 import com.filataxi.fila.model.Driver;
 import com.filataxi.fila.model.Position;
+import com.filataxi.fila.model.Status;
 import com.filataxi.fila.repository.DriverRepository;
 import com.filataxi.fila.repository.PositionRepository;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.filataxi.fila.model.Status.AGUARDANDO;
+import static com.filataxi.fila.model.Status.RODANDO;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
@@ -30,15 +33,15 @@ public class FilaController {
 
 	@PostMapping("head")
 	public List<Position> head() {
+
 		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
 
 		Position position = all.stream().sorted(comparing(Position::getIndex)).findFirst().get();
 		Position lastIndex = all.stream().sorted(comparing(Position::getIndex).reversed()).findFirst().get();
 
 		List<Position> updates = all.stream()
-				.filter(f -> !f.equals(position))
-				.filter(p -> p.getIndex() >= (position.getIndex() - 1) && p.getIndex() < position.getIndex())
-				.map(m -> m.up())
+				.filter(p -> p.getIndex() > position.getIndex())
+				.map(Position::up)
 				.collect(toList());
 
 		updates.add(position.withIndex(lastIndex.getIndex()));
@@ -49,6 +52,7 @@ public class FilaController {
 	}
 
 
+
 	@PostMapping("enqueue")
 	public List<Position> enqueue() {
 
@@ -57,7 +61,7 @@ public class FilaController {
 		List<Driver> all = driverRepository.findAll();
 
 		List<Position> positions = IntStream.range(0, all.size())
-				.mapToObj(o -> Position.builder().driver(all.get(o)).index(++o).build())
+				.mapToObj(o -> Position.builder().driver(all.get(o)).index(++o).status(AGUARDANDO).build())
 				.collect(toList());
 
 		return positionRepository.save(positions);
@@ -81,12 +85,20 @@ public class FilaController {
 				.map(m -> m.down())
 				.collect(toList());
 
-		updates.add(position.up(qtyPositions));
+		updates.add(position.up(qtyPositions).withStatus(AGUARDANDO));
 
 		positionRepository.save(updates);
 
 		return positionRepository.findAllByOrderByIndexAsc();
 
+	}
+
+	@PutMapping("change-status/{id}")
+	public Position changeStatus(@PathVariable Integer id) {
+		Position existingDriver = positionRepository.findOne(id);
+		Status status = existingDriver.getStatus().equals(AGUARDANDO) ?RODANDO :AGUARDANDO;
+		existingDriver.setStatus(status);
+		return positionRepository.save(existingDriver);
 	}
 
 

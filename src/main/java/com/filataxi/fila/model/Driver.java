@@ -21,4 +21,10 @@ public class Driver {
 
 	private String name;
 
+	@Override
+	public String toString() {
+		return "Driver{" +
+				"name='" + name + '\'' +
+				'}';
+	}
 }
