@@ -21,6 +21,8 @@ public class Driver {
 
 	private String name;
 
+	private String email;
+
 	@Override
 	public String toString() {
 		return "Driver{" +

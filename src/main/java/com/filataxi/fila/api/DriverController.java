@@ -16,10 +16,10 @@ public class DriverController {
 
 	@PostMapping("init")
 	public void init() {
-		driverRepository.save(Driver.builder().name("Jocelio").build());
-		driverRepository.save(Driver.builder().name("Rafaele").build());
-		driverRepository.save(Driver.builder().name("Heloise").build());
-		driverRepository.save(Driver.builder().name("Maria Luiza").build());
+		driverRepository.save(Driver.builder().name("Jocelio").email("jocelio@mail.com").build());
+		driverRepository.save(Driver.builder().name("Rafaele").email("rafaele@mail.com").build());
+		driverRepository.save(Driver.builder().name("Heloise").email("heloise@mail.com").build());
+		driverRepository.save(Driver.builder().name("Maria Luiza").email("marialuiza@mail.com").build());
 	}
 
 	@PostMapping
@@ -33,10 +33,11 @@ public class DriverController {
 	}
 
 	@PutMapping("/{id}")
-	public void editDriver(@PathVariable Integer id, @RequestBody Driver driver) {
+	public Driver editDriver(@PathVariable Integer id, @RequestBody Driver driver) {
 		Driver existingDriver = driverRepository.findOne(id);
 		driver.setName(driver.getName());
-		driverRepository.save(existingDriver);
+		driver.setEmail(driver.getEmail());
+		return driverRepository.save(existingDriver);
 	}
 
 	@DeleteMapping("/{id}")
