@@ -1,11 +1,16 @@
 package com.filataxi.fila.api;
 
 import com.filataxi.fila.model.Driver;
+import com.filataxi.fila.model.Position;
+import com.filataxi.fila.model.Status;
 import com.filataxi.fila.repository.DriverRepository;
+import com.filataxi.fila.repository.PositionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static java.util.Comparator.comparing;
 
 @RestController
 @RequestMapping("/driver")
@@ -13,6 +18,8 @@ import java.util.List;
 public class DriverController {
 
 	private DriverRepository driverRepository;
+
+	private PositionRepository positionRepository;
 
 	@PostMapping("init")
 	public void init() {
@@ -30,12 +37,20 @@ public class DriverController {
 	@PostMapping("/disable/{id}")
 	public Driver disable(@PathVariable Integer id) {
 		Driver one = driverRepository.findOne(id);
+		positionRepository.deleteByDriverId(one.getId());
 		return driverRepository.save(one.disable());
 	}
 
 	@PostMapping("/enable/{id}")
 	public Driver enable(@PathVariable Integer id) {
+
 		Driver one = driverRepository.findOne(id);
+
+		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
+		Position position = all.stream().sorted(comparing(Position::getIndex)).findFirst().get();
+		Position newPosition = Position.builder().status(Status.AGUARDANDO).driver(one).index(position.getIndex() + 1).build();
+		positionRepository.save(newPosition);
+
 		return driverRepository.save(one.enable());
 	}
 
