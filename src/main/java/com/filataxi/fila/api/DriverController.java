@@ -27,13 +27,13 @@ public class DriverController {
 		return driverRepository.save(driver);
 	}
 
-	@PostMapping("disable")
+	@PostMapping("/disable/{id}")
 	public Driver disable(@PathVariable Integer id) {
 		Driver one = driverRepository.findOne(id);
 		return driverRepository.save(one.disable());
 	}
 
-	@PostMapping("enable")
+	@PostMapping("/enable/{id}")
 	public Driver enable(@PathVariable Integer id) {
 		Driver one = driverRepository.findOne(id);
 		return driverRepository.save(one.enable());
