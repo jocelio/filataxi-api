@@ -1,12 +1,16 @@
 package com.filataxi.fila.api;
 
 import com.filataxi.fila.model.Driver;
+import com.filataxi.fila.model.HistoryData;
 import com.filataxi.fila.model.Position;
 import com.filataxi.fila.model.Status;
 import com.filataxi.fila.repository.DriverRepository;
 import com.filataxi.fila.repository.PositionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.bus.Event;
+import reactor.bus.EventBus;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -25,6 +29,9 @@ public class FilaController {
 	private DriverRepository driverRepository;
 
 	private PositionRepository positionRepository;
+
+	@Autowired
+	private EventBus eventBus;
 
 	@GetMapping
 	public List<Position> get() {
@@ -45,6 +52,10 @@ public class FilaController {
 				.collect(toList());
 
 		updates.add(position.withIndex(lastIndex.getIndex()));
+
+		updates.forEach(u -> {
+			eventBus.notify("historyConsumer", Event.wrap(HistoryData.movePosition(u)));
+		});
 
 		positionRepository.save(updates);
 
@@ -87,6 +98,10 @@ public class FilaController {
 
 		updates.add(position.up(qtyPositions).withStatus(AGUARDANDO));
 
+		updates.forEach(u -> {
+			eventBus.notify("historyConsumer", Event.wrap(HistoryData.movePosition(u)));
+		});
+
 		positionRepository.save(updates);
 
 		return positionRepository.findAllByOrderByIndexAsc();
@@ -95,10 +110,13 @@ public class FilaController {
 
 	@PutMapping("change-status/{id}")
 	public Position changeStatus(@PathVariable Integer id) {
-		Position existingDriver = positionRepository.findOne(id);
-		Status status = existingDriver.getStatus().equals(AGUARDANDO) ?RODANDO :AGUARDANDO;
-		existingDriver.setStatus(status);
-		return positionRepository.save(existingDriver);
+		Position position = positionRepository.findOne(id);
+		Status status = position.getStatus().equals(AGUARDANDO) ?RODANDO :AGUARDANDO;
+		position.setStatus(status);
+
+		eventBus.notify("historyConsumer", Event.wrap(HistoryData.changeStatus(position)));
+
+		return positionRepository.save(position);
 	}
 
 

@@ -1,16 +1,22 @@
 package com.filataxi.fila.api;
 
 import com.filataxi.fila.model.Driver;
+import com.filataxi.fila.model.HistoryData;
 import com.filataxi.fila.model.Position;
-import com.filataxi.fila.model.Status;
 import com.filataxi.fila.repository.DriverRepository;
 import com.filataxi.fila.repository.PositionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.bus.Event;
+import reactor.bus.EventBus;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.filataxi.fila.model.HistoryType.ENTER_QUEUE;
+import static com.filataxi.fila.model.HistoryType.EXIT_QUEUE;
+import static com.filataxi.fila.model.Status.AGUARDANDO;
 import static java.util.Comparator.comparing;
 
 @RestController
@@ -21,6 +27,9 @@ public class DriverController {
 	private DriverRepository driverRepository;
 
 	private PositionRepository positionRepository;
+
+	@Autowired
+	private EventBus eventBus;
 
 	@PostMapping("init")
 	public void init() {
@@ -44,6 +53,8 @@ public class DriverController {
 		IntStream.range(0, all.size()).mapToObj(i -> all.get(i).withIndex(i+1))
 				.forEach(positionRepository::save);
 
+		eventBus.notify("historyConsumer", Event.wrap(HistoryData.exitQueue(one)));
+
 		return driverRepository.save(one.disable());
 	}
 
@@ -54,8 +65,10 @@ public class DriverController {
 
 		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
 		Position position = all.stream().sorted(comparing(Position::getIndex).reversed()).findFirst().orElse(Position.builder().index(0).build());
-		Position newPosition = Position.builder().status(Status.AGUARDANDO).driver(one).index(position.getIndex() + 1).build();
+		Position newPosition = Position.builder().status(AGUARDANDO).driver(one).index(position.getIndex() + 1).build();
 		positionRepository.save(newPosition);
+
+		eventBus.notify("historyConsumer", Event.wrap(HistoryData.enterQueue(newPosition)));
 
 		return driverRepository.save(one.enable());
 	}
@@ -82,4 +95,6 @@ public class DriverController {
 
 		driverRepository.delete(id);
 	}
+
+
 }
