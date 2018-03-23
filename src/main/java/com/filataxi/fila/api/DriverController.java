@@ -73,7 +73,13 @@ public class DriverController {
 
 	@DeleteMapping("/{id}")
 	public void deleteDriver(@PathVariable Integer id) {
+
 		positionRepository.deleteByDriverId(id);
+
+		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
+		IntStream.range(0, all.size()).mapToObj(i -> all.get(i).withIndex(i+1))
+				.forEach(positionRepository::save);
+
 		driverRepository.delete(id);
 	}
 }
