@@ -67,6 +67,7 @@ public class DriverController {
 
 	@DeleteMapping("/{id}")
 	public void deleteDriver(@PathVariable Integer id) {
+		positionRepository.deleteByDriverId(id);
 		driverRepository.delete(id);
 	}
 }
