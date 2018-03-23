@@ -58,7 +58,7 @@ public class FilaController {
 
 		positionRepository.deleteAll();
 
-		List<Driver> all = driverRepository.findAll();
+		List<Driver> all = driverRepository.findByEnabledTrue();
 
 		List<Position> positions = IntStream.range(0, all.size())
 				.mapToObj(o -> Position.builder().driver(all.get(o)).index(++o).status(AGUARDANDO).build())

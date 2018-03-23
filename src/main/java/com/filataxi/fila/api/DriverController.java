@@ -27,6 +27,18 @@ public class DriverController {
 		return driverRepository.save(driver);
 	}
 
+	@PostMapping("disable")
+	public Driver disable(@PathVariable Integer id) {
+		Driver one = driverRepository.findOne(id);
+		return driverRepository.save(one.disable());
+	}
+
+	@PostMapping("enable")
+	public Driver enable(@PathVariable Integer id) {
+		Driver one = driverRepository.findOne(id);
+		return driverRepository.save(one.enable());
+	}
+
 	@GetMapping
 	public List<Driver> getDrivers() {
 		return driverRepository.findAll();
@@ -34,10 +46,8 @@ public class DriverController {
 
 	@PutMapping("/{id}")
 	public Driver editDriver(@PathVariable Integer id, @RequestBody Driver driver) {
-		Driver existingDriver = driverRepository.findOne(id);
-		driver.setName(driver.getName());
-		driver.setEmail(driver.getEmail());
-		return driverRepository.save(existingDriver);
+		driver.setId(id);
+		return driverRepository.save(driver);
 	}
 
 	@DeleteMapping("/{id}")
