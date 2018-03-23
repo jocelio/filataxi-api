@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static java.util.Comparator.comparing;
 
@@ -38,6 +39,11 @@ public class DriverController {
 	public Driver disable(@PathVariable Integer id) {
 		Driver one = driverRepository.findOne(id);
 		positionRepository.deleteByDriverId(one.getId());
+
+		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
+		IntStream.range(0, all.size()).mapToObj(i -> all.get(i).withIndex(i+1))
+				.forEach(positionRepository::save);
+
 		return driverRepository.save(one.disable());
 	}
 
@@ -47,7 +53,7 @@ public class DriverController {
 		Driver one = driverRepository.findOne(id);
 
 		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
-		Position position = all.stream().sorted(comparing(Position::getIndex)).findFirst().get();
+		Position position = all.stream().sorted(comparing(Position::getIndex).reversed()).findFirst().orElse(Position.builder().index(0).build());
 		Position newPosition = Position.builder().status(Status.AGUARDANDO).driver(one).index(position.getIndex() + 1).build();
 		positionRepository.save(newPosition);
 
