@@ -14,9 +14,9 @@ import reactor.bus.EventBus;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static com.filataxi.fila.model.HistoryType.ENTER_QUEUE;
-import static com.filataxi.fila.model.HistoryType.EXIT_QUEUE;
 import static com.filataxi.fila.model.Status.AGUARDANDO;
+import static java.lang.Boolean.TRUE;
+import static java.time.LocalDate.now;
 import static java.util.Comparator.comparing;
 
 @RestController
@@ -33,10 +33,10 @@ public class DriverController {
 
 	@PostMapping("init")
 	public void init() {
-		driverRepository.save(Driver.builder().name("Jocelio").email("jocelio@mail.com").build());
-		driverRepository.save(Driver.builder().name("Rafaele").email("rafaele@mail.com").build());
-		driverRepository.save(Driver.builder().name("Heloise").email("heloise@mail.com").build());
-		driverRepository.save(Driver.builder().name("Maria Luiza").email("marialuiza@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(TRUE).name("Jocelio").email("jocelio@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(TRUE).name("Rafaele").email("rafaele@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(TRUE).name("Heloise").email("heloise@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(TRUE).name("Maria Luiza").email("marialuiza@mail.com").build());
 	}
 
 	@PostMapping
@@ -49,7 +49,7 @@ public class DriverController {
 		Driver one = driverRepository.findOne(id);
 		positionRepository.deleteByDriverId(one.getId());
 
-		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
+		List<Position> all = positionRepository.findAllByDateOrderByIndexAsc(now());
 		IntStream.range(0, all.size()).mapToObj(i -> all.get(i).withIndex(i+1))
 				.forEach(positionRepository::save);
 
@@ -63,9 +63,9 @@ public class DriverController {
 
 		Driver one = driverRepository.findOne(id);
 
-		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
+		List<Position> all = positionRepository.findAllByDateOrderByIndexAsc(now());
 		Position position = all.stream().sorted(comparing(Position::getIndex).reversed()).findFirst().orElse(Position.builder().index(0).build());
-		Position newPosition = Position.builder().status(AGUARDANDO).driver(one).index(position.getIndex() + 1).build();
+		Position newPosition = Position.builder().date(now()).status(AGUARDANDO).driver(one).index(position.getIndex() + 1).build();
 		positionRepository.save(newPosition);
 
 		eventBus.notify("historyConsumer", Event.wrap(HistoryData.enterQueue(newPosition)));
@@ -76,6 +76,11 @@ public class DriverController {
 	@GetMapping
 	public List<Driver> getDrivers() {
 		return driverRepository.findAll();
+	}
+
+	@GetMapping("/{email}")
+	public Driver fromEmail(@PathVariable String email) {
+		return driverRepository.findOneByEmail(email);
 	}
 
 	@PutMapping("/{id}")
@@ -89,7 +94,7 @@ public class DriverController {
 
 		positionRepository.deleteByDriverId(id);
 
-		List<Position> all = positionRepository.findAllByOrderByIndexAsc();
+		List<Position> all = positionRepository.findAllByDateOrderByIndexAsc(now());
 		IntStream.range(0, all.size()).mapToObj(i -> all.get(i).withIndex(i+1))
 				.forEach(positionRepository::save);
 
