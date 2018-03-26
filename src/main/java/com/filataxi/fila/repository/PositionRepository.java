@@ -7,12 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 
 
 @Repository
 public interface PositionRepository extends JpaRepository<Position, Integer>{
-	 List<Position> findAllByOrderByIndexAsc();
+
+	 List<Position> findAllByDateOrderByIndexAsc(LocalDate data);
 
 	@Transactional
 	@Modifying
