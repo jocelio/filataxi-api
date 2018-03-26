@@ -46,6 +46,13 @@ public class HistoryConsumer implements Consumer<Event<HistoryData>> {
 					, historyData.getPosition().getStatus().toString()));
 		}
 
+		if(historyData.getHistoryType().equals(NEXT_QUEUE)) {
+			historyData.setDescription(format("Motorista %s foi colocado na fila do dia %s na posição %s."
+					, historyData.getPosition().getDriver().getName()
+					, historyData.getPosition().getDate()
+					, historyData.getPosition().getIndex()));
+		}
+
 		historyData.setTime(now());
 		historyRepository.save(historyData);
 
