@@ -22,25 +22,11 @@ public class HistoryData {
 
 	private String description;
 
+	private Integer idDriver;
+
 	private HistoryType historyType;
 
 	private LocalDateTime time;
-
-	public static HistoryData enterQueue(Position position){
-		return HistoryData.builder().position(position).historyType(ENTER_QUEUE).build();
-	}
-
-	public static HistoryData movePosition(Position position){
-		return HistoryData.builder().position(position).historyType(MOVE_POSITION).build();
-	}
-
-	public static HistoryData changeStatus(Position position){
-		return HistoryData.builder().position(position).historyType(CHANGE_STATUS).build();
-	}
-
-	public static HistoryData exitQueue(Driver driver){
-		return HistoryData.builder().driver(driver).historyType(EXIT_QUEUE).build();
-	}
 
 	@JsonIgnore
 	@Transient
@@ -49,5 +35,25 @@ public class HistoryData {
 	@JsonIgnore
 	@Transient
 	private Driver driver;
+
+	public static HistoryData enterQueue(Position position){
+		return HistoryData.builder().idDriver(position.getDriver().getId()).position(position).historyType(ENTER_QUEUE).build();
+	}
+
+	public static HistoryData movePosition(Position position){
+		return HistoryData.builder().idDriver(position.getDriver().getId()).position(position).historyType(MOVE_POSITION).build();
+	}
+
+	public static HistoryData changeStatus(Position position){
+		return HistoryData.builder().idDriver(position.getDriver().getId()).position(position).historyType(CHANGE_STATUS).build();
+	}
+
+	public static HistoryData nextQueue(Position position){
+		return HistoryData.builder().idDriver(position.getDriver().getId()).position(position).historyType(NEXT_QUEUE).build();
+	}
+
+	public static HistoryData exitQueue(Driver driver){
+		return HistoryData.builder().idDriver(driver.getId()).driver(driver).historyType(EXIT_QUEUE).build();
+	}
 
 }
