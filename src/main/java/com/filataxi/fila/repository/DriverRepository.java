@@ -10,5 +10,5 @@ import java.util.List;
 public interface DriverRepository extends JpaRepository<Driver, Integer>{
 	List<Driver> findByEnabledTrue();
 
-	Driver findOneByEmail(String email);
+	Driver findByEmail(String email);
 }

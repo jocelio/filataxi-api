@@ -33,7 +33,7 @@ public class DriverController {
 
 	@PostMapping("init")
 	public void init() {
-		driverRepository.save(Driver.builder().enabled(FALSE).name("Jocelio").email("jocelio@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(FALSE).name("Jocelio").email("jclls@hotmail.com").build());
 		driverRepository.save(Driver.builder().enabled(FALSE).name("Rafaele").email("rafaele@mail.com").build());
 		driverRepository.save(Driver.builder().enabled(FALSE).name("Heloise").email("heloise@mail.com").build());
 		driverRepository.save(Driver.builder().enabled(FALSE).name("Maria Luiza").email("marialuiza@mail.com").build());
@@ -80,7 +80,7 @@ public class DriverController {
 
 	@GetMapping("/{email}")
 	public Driver fromEmail(@PathVariable String email) {
-		return driverRepository.findOneByEmail(email);
+		return driverRepository.findByEmail(email.concat(".com"));
 	}
 
 	@PutMapping("/{id}")
