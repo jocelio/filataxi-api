@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.filataxi.fila.model.Status.AGUARDANDO;
-import static java.lang.Boolean.TRUE;
+import static java.lang.Boolean.FALSE;
 import static java.time.LocalDate.now;
 import static java.util.Comparator.comparing;
 
@@ -33,10 +33,10 @@ public class DriverController {
 
 	@PostMapping("init")
 	public void init() {
-		driverRepository.save(Driver.builder().enabled(TRUE).name("Jocelio").email("jocelio@mail.com").build());
-		driverRepository.save(Driver.builder().enabled(TRUE).name("Rafaele").email("rafaele@mail.com").build());
-		driverRepository.save(Driver.builder().enabled(TRUE).name("Heloise").email("heloise@mail.com").build());
-		driverRepository.save(Driver.builder().enabled(TRUE).name("Maria Luiza").email("marialuiza@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(FALSE).name("Jocelio").email("jocelio@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(FALSE).name("Rafaele").email("rafaele@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(FALSE).name("Heloise").email("heloise@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(FALSE).name("Maria Luiza").email("marialuiza@mail.com").build());
 	}
 
 	@PostMapping
