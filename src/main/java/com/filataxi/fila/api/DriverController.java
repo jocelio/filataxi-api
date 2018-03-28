@@ -58,6 +58,20 @@ public class DriverController {
 		return driverRepository.save(one.disable());
 	}
 
+	@PostMapping("/exit-queue/{id}")
+	public Driver selfExitQueue(@PathVariable Integer id) {
+		Driver one = driverRepository.findOne(id);
+		positionRepository.deleteByDriverId(one.getId());
+
+		List<Position> all = positionRepository.findAllByDateOrderByIndexAsc(now());
+		IntStream.range(0, all.size()).mapToObj(i -> all.get(i).withIndex(i+1))
+				.forEach(positionRepository::save);
+
+		eventBus.notify("historyConsumer", Event.wrap(HistoryData.selfExitQueue(one)));
+
+		return driverRepository.save(one.disable());
+	}
+
 	@PostMapping("/enable/{id}")
 	public Driver enable(@PathVariable Integer id) {
 

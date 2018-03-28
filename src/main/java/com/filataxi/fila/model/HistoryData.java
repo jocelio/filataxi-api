@@ -56,4 +56,8 @@ public class HistoryData {
 		return HistoryData.builder().idDriver(driver.getId()).driver(driver).historyType(EXIT_QUEUE).build();
 	}
 
+	public static HistoryData selfExitQueue(Driver driver){
+		return HistoryData.builder().idDriver(driver.getId()).driver(driver).historyType(SELF_EXIT_QUEUE).build();
+	}
+
 }
