@@ -52,7 +52,7 @@ public class HistoryConsumer implements Consumer<Event<HistoryData>> {
 				, historyData.getPosition().getIndex()));
 		}
 
-		if(historyData.getHistoryType().equals(NEXT_QUEUE)) {
+		if(historyData.getHistoryType().equals(SELF_EXIT_QUEUE)) {
 			historyData.setDescription(format("Motorista %s saiu espontaneamente da fila."
 				, historyData.getPosition().getDriver().getName()));
 		}
