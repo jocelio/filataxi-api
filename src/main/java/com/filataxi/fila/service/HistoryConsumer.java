@@ -54,7 +54,7 @@ public class HistoryConsumer implements Consumer<Event<HistoryData>> {
 
 		if(historyData.getHistoryType().equals(SELF_EXIT_QUEUE)) {
 			historyData.setDescription(format("Motorista %s saiu espontaneamente da fila."
-				, historyData.getPosition().getDriver().getName()));
+				, historyData.getDriver().getName()));
 		}
 
 		historyData.setTime(now());
