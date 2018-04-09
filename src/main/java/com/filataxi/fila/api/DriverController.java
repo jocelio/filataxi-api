@@ -37,6 +37,8 @@ public class DriverController {
 		driverRepository.save(Driver.builder().enabled(FALSE).name("Rafaele").email("rafaele@mail.com").build());
 		driverRepository.save(Driver.builder().enabled(FALSE).name("Heloise").email("heloise@mail.com").build());
 		driverRepository.save(Driver.builder().enabled(FALSE).name("Maria Luiza").email("marialuiza@mail.com").build());
+		driverRepository.save(Driver.builder().enabled(FALSE).name("Iarley Barbosa").email("iarleyb13@hotmail.com").build());
+
 	}
 
 	@PostMapping
